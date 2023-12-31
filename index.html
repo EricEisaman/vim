@@ -1,44 +1,142 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   <title>Vim Online Editor - Vim Editor In Browser</title>
-   <meta charset="utf-8">
-   <meta http-equiv="origin-trial" content="AphUM/Qt5R/jf2M2dWkL/9U8kgJr6a9UcC9gJyF3YQbyw0aDz713tceDbpxlBlIHYiF/jOMywy0Tft4/lWlv2QkAAAB9eyJvcmlnaW4iOiJodHRwczovL3ZpbW9ubGluZWVkaXRvci5jb206NDQzIiwiZmVhdHVyZSI6IlVucmVzdHJpY3RlZFNoYXJlZEFycmF5QnVmZmVyIiwiZXhwaXJ5IjoxNjg4MDgzMTk5LCJpc1N1YmRvbWFpbiI6dHJ1ZX0=">
-   <link rel="stylesheet" href="style.css" />
-   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css">
-</head>
-<body>
-   <h1>Vim Online Editor (beta)</h1>
-   <p>
-   Hey! This is still in beta, which means LOTS of exciting new features are being developed! 
-  And yes, it's OPEN SOURCED! You can check it out on <a href="https://github.com/programmerhat/vim-online-editor">Github: programmerhat/vim-online-editor</a>
-   </p>
-   <p>
-   Got a feature request? I'd love to hear it! I'm on <a href="https://twitter.com/programmerhat">Twitter @programmerhat</a>. 
-     I will occasionally do product decisions via polling on Twitter! 
-     You can also send an email to <a href="mailto:hello@programmerhat.com">hello@programmerhat.com</a>.
-   </p>
-   <p>NOTE that this is downloading 2 MB, so give it a second for it to fully download.</p>
-   <div class="row">
-       <form action="https://www.paypal.com/donate" method="post" target="_top" style="display: inline-block;
-           margin-bottom: 0px;
-           padding-bottom: 0px;
-           height: 25px;">
-           <input type="hidden" name="hosted_button_id" value="GTJPQJL6QU764" />
-           <input type="image" src="img/btn_donate_SM.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-           <img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1" />
-       </form>
-       <button id='pastebtn' onclick='paste(event)'>Paste</button>
-       <button onclick='loadvimrc(event)'>Load vimrc</button>
-       <input id="vim-input" autocomplete="off" />
-   </div>
-   <div id="vim-editor" onclick='focuseditor()'>
-       <canvas id="vim-screen"></canvas>
-   </div>
-   <!-- Rest of your HTML content goes here -->
-   <script type="module" src="vimwasm.js" async></script>
-   <script type="module" src="main.js"></script>
-   <!-- Rest of your JavaScript content goes here -->
-</body>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vim Online Editor - Vim Editor In Browser</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+    />
+  </head>
+  <body>
+    <h1>Vim Online Editor</h1>
+    <p>
+      Hello, SirFizX here. This is a fork of an open source project by
+      <a href="https://twitter.com/programmerhat" target="_blank"
+        >@programmerhat</a
+      >. You can check it out the original project on
+      <a href="https://github.com/programmerhat/vim-online-editor"
+        >Github: programmerhat/vim-online-editor</a
+      >
+    </p>
+    <p>
+      Got a feature request? I'd love to hear it! I'm on
+      <a href="https://twitter.com/SirFizX207">Twitter @SirFizX207</a>. 
+    </p>
+    <div class="row">
+      <button id="pastebtn" onclick="paste(event)">Paste</button>
+      <button onclick="loadvimrc(event)">Load vimrc</button>
+      <input id="vim-input" autocomplete="off" />
+    </div>
+    <div id="vim-editor" onclick="focuseditor()">
+      <canvas id="vim-screen"></canvas>
+    </div>
+
+    <h2>How to use Vim Online Editor?</h2>
+
+    <p>
+      If you've got your own vimrc, you'll probably want to install that
+      straight away. Click on "Load vimrc", then copy your vimrc, and click
+      "Paste" to install your vimrc. Do ":write" and reload the tab. The vimrc
+      will be installed.
+    </p>
+
+    <p>Caveat is that this app currently does not support plugins.</p>
+
+    <p>Then just click the vim box and you're good to go!</p>
+
+    <p>
+      It's free. Doesn't cost anything.
+    </p>
+
+    <script type="module" src="vimwasm.js" async></script>
+    <script type="module" src="main.js"></script>
+    <script>
+      function getinput() {
+        return document.getElementById("vim-input");
+      }
+
+      function typekey(letter) {
+        // Taken from https://stackoverflow.com/a/71264026
+        getinput().dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: letter,
+            // key: "e",
+            // keyCode: 69,        // example values.
+            // code: "KeyE",       // put everything you need in this object.
+            // which: 69,
+            shiftKey: false, // you don't need to include values
+            ctrlKey: false, // if you aren't going to use them.
+            metaKey: false, // these are here for example's sake.
+          })
+        );
+        getinput().dispatchEvent(
+          new KeyboardEvent("keyup", {
+            key: letter,
+            shiftKey: false, // you don't need to include values
+            ctrlKey: false, // if you aren't going to use them.
+            metaKey: false, // these are here for example's sake.
+          })
+        );
+      }
+
+      function type(s) {
+        for (var i = 0; i < s.length; ++i) {
+          typekey(s[i]);
+        }
+      }
+
+      function esc() {
+        typekey("Escape");
+      }
+      function enter() {
+        // For some reason, 'enter' REALLY wanted all the rest of the properties here.
+        getinput().dispatchEvent(
+          new KeyboardEvent("keydown", {
+            key: "Enter",
+            keyCode: 13,
+            code: "Enter",
+            which: 13,
+            isTrusted: true,
+            shiftKey: false, // you don't need to include values
+            ctrlKey: false, // if you aren't going to use them.
+            metaKey: false, // these are here for example's sake.
+          })
+        );
+      }
+      function focus() {
+        getinput().focus();
+      }
+
+      var isFirefox = navigator.userAgent.indexOf("Firefox") !== -1;
+
+      function paste(e) {
+        if (isFirefox) {
+          alert("Firefox does not allow web apps to read clipboard.");
+          return;
+        }
+        console.log("event:", e);
+        focuseditor();
+        esc();
+        type('"*p');
+        focus();
+      }
+
+      function loadvimrc(e) {
+        console.log("event:", e);
+        focuseditor();
+        esc();
+        type(":e ~/.vim/vimrc");
+        enter();
+        focus();
+      }
+
+      function focuseditor() {
+        // Make it so that the button is top of the viewport.
+        document.getElementById("pastebtn").scrollIntoView();
+      }
+    </script>
+  </body>
 </html>
